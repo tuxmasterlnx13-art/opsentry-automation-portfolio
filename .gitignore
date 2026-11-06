@@ -1,0 +1,47 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Sessions, browser profiles, and runtime state
+sesiones/
+**/sesiones/
+**/*session*.json
+**/*storage_state*.json
+**/.perfil*/
+**/state/
+**/runs/
+**/logs/
+**/evidence/
+**/backups/
+
+# Customer and operational data
+*.csv
+*.xlsx
+*.xls
+*.db
+*.sqlite
+*.sqlite3
+*.har
+*.trace
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.mp4
+
+# Build and dependency artifacts
+venv/
+.venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+dist/
+build/
+
