@@ -30,6 +30,7 @@ sesiones/
 *.trace
 *.zip
 *.png
+!projects/fraudguard-community/demo/fraudguard/static/guardian-emblem.png
 *.jpg
 *.jpeg
 *.mp4

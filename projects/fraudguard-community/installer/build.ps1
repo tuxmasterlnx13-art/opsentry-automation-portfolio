@@ -48,5 +48,5 @@ try {
     Pop-Location
 }
 
-Write-Host "Installer created at: $(Join-Path $installerRoot 'output\FraudGuard-Community-Setup.exe')"
+Write-Host "Installer created at: $(Join-Path $installerRoot 'output\Guardian-Community-Setup.exe')"
 

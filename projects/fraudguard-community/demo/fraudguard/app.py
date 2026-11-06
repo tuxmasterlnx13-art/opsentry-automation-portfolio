@@ -1,4 +1,4 @@
-"""Flask user interface for FraudGuard Community."""
+"""Flask user interface for GUARDIAN Community."""
 
 from __future__ import annotations
 
@@ -126,7 +126,7 @@ def create_app(*, lan_mode: bool = False, access_key_hash: str | None = None) ->
         return Response(
             output.getvalue(),
             mimetype="text/csv",
-            headers={"Content-Disposition": "attachment; filename=fraudguard_resultados.csv"},
+            headers={"Content-Disposition": "attachment; filename=guardian_resultados.csv"},
         )
 
     @app.errorhandler(413)

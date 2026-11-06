@@ -22,7 +22,7 @@ class LauncherTests(unittest.TestCase):
             self.assertTrue(first_key.startswith("FG-"))
             self.assertTrue(second_key.startswith("FG-"))
             self.assertNotEqual(first["access_key_hash"], second["access_key_hash"])
-            saved = json.loads((Path(directory) / "FraudGuardCommunity" / "config.json").read_text())
+            saved = json.loads((Path(directory) / "GuardianCommunity" / "config.json").read_text())
             self.assertEqual(second["access_key_hash"], saved["access_key_hash"])
 
 

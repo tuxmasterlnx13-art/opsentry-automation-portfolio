@@ -20,7 +20,7 @@ from .app import create_app
 
 def app_data_dir() -> Path:
     root = os.environ.get("LOCALAPPDATA") or str(Path.home())
-    path = Path(root) / "FraudGuardCommunity"
+    path = Path(root) / "GuardianCommunity"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -62,7 +62,7 @@ def notify(title: str, message: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="FraudGuard Community")
+    parser = argparse.ArgumentParser(description="GUARDIAN Community")
     parser.add_argument("--lan", action="store_true", help="Allow protected company LAN access")
     parser.add_argument("--reset-access-key", action="store_true", help="Generate a new company access key")
     parser.add_argument("--port", type=int, default=8765)
@@ -77,7 +77,7 @@ def main() -> None:
     if args.lan:
         share_url = f"http://{lan_address()}:{args.port}"
         key_note = f"\n\nClave inicial: {new_key}" if new_key else "\n\nLa clave existente sigue activa."
-        notify("FraudGuard — acceso de empresa", f"Comparte esta dirección solo dentro de tu red:\n{share_url}{key_note}")
+        notify("GUARDIAN — acceso de empresa", f"Comparte esta dirección solo dentro de tu red:\n{share_url}{key_note}")
 
     def open_browser() -> None:
         time.sleep(1)

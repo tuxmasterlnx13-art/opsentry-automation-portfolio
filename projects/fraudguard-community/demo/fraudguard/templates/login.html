@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Acceso · FraudGuard{% endblock %}
+{% block title %}Acceso · GUARDIAN{% endblock %}
 {% block content %}
 <section class="login-card">
-  <p class="eyebrow">ACCESO DE EMPRESA</p>
+  <img class="login-emblem" src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="Emblema Guardian">
+  <p class="eyebrow">GUARDIAN · ACCESO DE EMPRESA</p>
   <h1>Ingresa la clave compartida</h1>
   <p>El administrador de la instalación puede darte esta clave. No la envíes fuera de la empresa.</p>
   <form method="post" class="stack">

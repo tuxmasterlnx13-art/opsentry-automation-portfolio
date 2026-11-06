@@ -1,4 +1,4 @@
-# FraudGuard Community
+# GUARDIAN Community
 
 Aplicación visual y gratuita para revisar archivos CSV y encontrar patrones que merecen investigación. Está pensada para personas sin conocimientos de programación: en Windows se instala con **Siguiente → Siguiente → Finalizar** y se abre desde el menú Inicio.
 
@@ -42,9 +42,9 @@ python -m fraudguard.launcher
 
 ## Instalador de Windows
 
-Ejecuta `installer\build.ps1`. El script genera el ejecutable con PyInstaller y, si Inno Setup 6 está instalado, produce `FraudGuard-Community-Setup.exe`.
+Ejecuta `installer\build.ps1`. El script genera el ejecutable con PyInstaller y, si Inno Setup 6 está instalado, produce `Guardian-Community-Setup.exe`.
 
 ## Licencia
 
-La edición FraudGuard Community se distribuye bajo licencia MIT. Puede usarse, estudiarse y modificarse libremente, sin garantía y respetando la licencia incluida.
+La edición GUARDIAN Community se distribuye bajo licencia MIT. Puede usarse, estudiarse y modificarse libremente, sin garantía y respetando la licencia incluida.
 

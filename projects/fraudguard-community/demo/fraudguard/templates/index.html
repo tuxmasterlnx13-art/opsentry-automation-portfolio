@@ -1,43 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="hero">
-  <div>
-    <p class="eyebrow">REVISIÓN EXPLICABLE DE OPERACIONES</p>
-    <h1>Encuentra patrones sospechosos sin escribir código.</h1>
-    <p class="lead">Carga un CSV, revisa por qué se marcó cada operación y exporta una lista para investigación humana.</p>
+  <div class="hero-copy">
+    <p class="eyebrow"><span></span> GUARDIAN / FRAUD INTELLIGENCE</p>
+    <h1>Fraude visible.<br><em>Decisiones humanas.</em></h1>
+    <p class="lead">Un observatorio privado para descubrir patrones sospechosos, entender cada señal y proteger tu empresa sin escribir una sola línea de código.</p>
+    <div class="hero-notes"><span>Sin nube</span><span>Sin caja negra</span><span>Datos bajo tu control</span></div>
   </div>
-  <div class="mode"><span>Modo</span><strong>{{ 'Empresa / LAN' if lan_mode else 'Solo esta PC' }}</strong></div>
+  <div class="guardian-stage" aria-label="Guardian, motor de inteligencia antifraude">
+    <div class="orbit one"></div><div class="orbit two"></div>
+    <img src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="Casco Guardian con dos espadas cruzadas">
+    <div class="guardian-word">GUARDIAN</div>
+    <div class="stage-meta"><span>COMMUNITY EDITION</span><strong>{{ 'RED EMPRESARIAL' if lan_mode else 'SOLO ESTA PC' }}</strong></div>
+  </div>
 </section>
 
+<div class="section-intro"><p class="eyebrow">WORKSPACE 01</p><h2>De archivo bruto a señales explicables.</h2></div>
 <section class="workspace">
   <article class="upload-card">
-    <span class="step">1</span>
+    <div class="card-top"><span class="step">01</span><span class="status-dot">LISTO</span></div>
     <h2>Carga tus operaciones</h2>
-    <p>Máximo 10 MB. El archivo no se envía a ningún servidor externo.</p>
+    <p>Selecciona un CSV de hasta 10 MB. El análisis ocurre dentro de esta computadora; ningún registro sale a Internet.</p>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="stack">
       <label class="file-control" for="file">Seleccionar archivo CSV</label>
       <input id="file" name="file" type="file" accept=".csv,text/csv" required>
-      <button type="submit">Analizar archivo</button>
+      <button type="submit">Analizar con Guardian <span>→</span></button>
     </form>
     <form action="{{ url_for('demo') }}" method="post"><button class="secondary" type="submit">Probar con datos de demostración</button></form>
     <details><summary>Ver columnas requeridas</summary><code>{{ required_columns }}</code></details>
   </article>
   <article class="guide-card">
-    <span class="step">2</span>
-    <h2>Interpreta, no adivines</h2>
+    <div class="card-top"><span class="step">02</span><span class="status-dot violet">EXPLICABLE</span></div>
+    <h2>Interpreta. No adivines.</h2>
     <ul>
       <li><strong>Alto:</strong> combinación de patrones; revisión prioritaria.</li>
       <li><strong>Medio:</strong> señal relevante; necesita contexto.</li>
       <li><strong>Bajo:</strong> señal aislada; observar.</li>
     </ul>
-    <p class="disclaimer">FraudGuard no acusa a nadie ni toma decisiones automáticas. Una alerta es una pista, no una prueba.</p>
+    <p class="disclaimer">Guardian no acusa a nadie ni toma decisiones automáticas. Una alerta es una pista para investigar, nunca una prueba.</p>
   </article>
 </section>
 
 {% if results %}
 <section class="results" aria-labelledby="results-title">
   <div class="section-heading">
-    <div><p class="eyebrow">RESULTADOS · {{ source_name }}</p><h2 id="results-title">Resumen de revisión</h2></div>
+    <div><p class="eyebrow">INTELLIGENCE REPORT · {{ source_name }}</p><h2 id="results-title">Mapa de señales</h2></div>
     <a class="button secondary" href="{{ url_for('export') }}">Exportar CSV</a>
   </div>
   <div class="metrics">
