@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 from dataclasses import asdict
+from decimal import Decimal, InvalidOperation
 from functools import wraps
 from pathlib import Path
 
@@ -26,6 +27,7 @@ def create_app(*, lan_mode: bool = False, access_key_hash: str | None = None) ->
         ACCESS_KEY_HASH=access_key_hash,
         RESULTS=[],
         SOURCE_NAME="",
+        ANALYSIS_SETTINGS=Settings(),
     )
 
     def authenticated() -> bool:
@@ -76,6 +78,7 @@ def create_app(*, lan_mode: bool = False, access_key_hash: str | None = None) ->
             source_name=app.config["SOURCE_NAME"],
             required_columns=", ".join(REQUIRED_COLUMNS),
             lan_mode=app.config["LAN_MODE"],
+            settings=app.config["ANALYSIS_SETTINGS"],
         )
 
     def run_analysis(rows: list[dict[str, str]], source_name: str):
@@ -83,13 +86,38 @@ def create_app(*, lan_mode: bool = False, access_key_hash: str | None = None) ->
         if missing:
             flash("Faltan columnas: " + ", ".join(missing), "error")
             return redirect(url_for("index"))
-        findings, errors = analyze(rows, Settings())
+        findings, errors = analyze(rows, app.config["ANALYSIS_SETTINGS"])
         app.config["RESULTS"] = [asdict(item) for item in findings]
         app.config["SOURCE_NAME"] = source_name
         if errors:
             flash(f"Se omitieron {len(errors)} filas inválidas. La primera: {errors[0]}", "warning")
         flash(f"Análisis terminado: {len(findings)} operaciones revisadas.", "success")
         return redirect(url_for("index"))
+
+    @app.post("/reglas")
+    @require_access
+    def update_rules():
+        try:
+            settings = Settings(
+                high_amount=Decimal(request.form["high_amount"].replace(",", ".")),
+                velocity_count=int(request.form["velocity_count"]),
+                velocity_minutes=int(request.form["velocity_minutes"]),
+                country_window_minutes=int(request.form["country_window_minutes"]),
+                shared_device_customers=int(request.form["shared_device_customers"]),
+            )
+            if settings.high_amount <= 0 or any(value <= 0 for value in (
+                settings.velocity_count,
+                settings.velocity_minutes,
+                settings.country_window_minutes,
+                settings.shared_device_customers,
+            )):
+                raise ValueError("todos los valores deben ser mayores que cero")
+        except (KeyError, InvalidOperation, ValueError) as exc:
+            flash(f"No se guardaron las reglas: revisa los números ({exc}).", "error")
+            return redirect(url_for("index") + "#reglas")
+        app.config["ANALYSIS_SETTINGS"] = settings
+        flash("Reglas guardadas para esta sesión. Se aplicarán en el próximo análisis.", "success")
+        return redirect(url_for("index") + "#reglas")
 
     @app.post("/upload")
     @require_access
@@ -113,6 +141,20 @@ def create_app(*, lan_mode: bool = False, access_key_hash: str | None = None) ->
     @require_access
     def demo():
         return run_analysis(list(SAMPLE_ROWS), "demostración sintética")
+
+    @app.get("/plantilla")
+    @require_access
+    def template_csv():
+        """Download a ready-to-open example for Excel and similar tools."""
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=REQUIRED_COLUMNS)
+        writer.writeheader()
+        writer.writerow(SAMPLE_ROWS[0])
+        return Response(
+            "\ufeff" + output.getvalue(),
+            mimetype="text/csv; charset=utf-8",
+            headers={"Content-Disposition": "attachment; filename=plantilla_guardian.csv"},
+        )
 
     @app.get("/export")
     @require_access

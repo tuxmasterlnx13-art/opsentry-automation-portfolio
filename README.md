@@ -4,6 +4,14 @@ Safely designed operations tooling for ISP audit, remediation, monitoring, and r
 
 > **Publication status:** release candidate. The code is staged from a private operational workspace through an explicit allowlist and automated safety checks. Live credentials, customer data, browser sessions, internal evidence, and production configuration are not part of this repository.
 
+## Featured release: GUARDIAN Community
+
+**Fraude visible. Decisiones humanas.** A Windows application that lets non-technical teams upload operations, configure explainable fraud-screening rules, and export a prioritized report without sending records to the cloud.
+
+- [Explore GUARDIAN](projects/fraudguard-community/README.md)
+- [Read the Spanish user manual](projects/fraudguard-community/MANUAL_DE_USO.md)
+- Install with **Next → Next → Finish**, then try the included synthetic demonstration.
+
 ## What this portfolio demonstrates
 
 | Project | Purpose | Engineering highlights |
@@ -53,5 +61,5 @@ No open-source license is attached to this release candidate yet. Public licensi
 
 ## Contact
 
-Open a GitHub issue for technical questions. For hiring or consulting inquiries, add your preferred public contact details to this section before publication.
+Open a GitHub issue for technical questions, hiring conversations, consulting work, or a private integration discussion. Never attach customer data, credentials, or internal evidence to a public issue.
 

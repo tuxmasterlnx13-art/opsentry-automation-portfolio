@@ -2,30 +2,32 @@
 {% block content %}
 <section class="hero">
   <div class="hero-copy">
-    <p class="eyebrow"><span></span> GUARDIAN / FRAUD INTELLIGENCE</p>
+    <p class="eyebrow"><span></span> GUARDIAN / DETECCIÓN DE FRAUDE</p>
     <h1>Fraude visible.<br><em>Decisiones humanas.</em></h1>
     <p class="lead">Un observatorio privado para descubrir patrones sospechosos, entender cada señal y proteger tu empresa sin escribir una sola línea de código.</p>
+    <a class="button hero-action" href="#analizar">Comenzar ahora <span>↓</span></a>
     <div class="hero-notes"><span>Sin nube</span><span>Sin caja negra</span><span>Datos bajo tu control</span></div>
   </div>
   <div class="guardian-stage" aria-label="Guardian, motor de inteligencia antifraude">
     <img src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="Casco Guardian con dos espadas cruzadas">
     <div class="guardian-word">GUARDIAN</div>
-    <div class="stage-meta"><span>COMMUNITY EDITION</span><strong>{{ 'RED EMPRESARIAL' if lan_mode else 'SOLO ESTA PC' }}</strong></div>
+    <div class="stage-meta"><span>EDICIÓN GRATUITA</span><strong>{{ 'RED EMPRESARIAL' if lan_mode else 'SOLO ESTA PC' }}</strong></div>
   </div>
 </section>
 
-<div class="section-intro"><p class="eyebrow">WORKSPACE 01</p><h2>De archivo bruto a señales explicables.</h2></div>
+<div class="section-intro" id="analizar"><p class="eyebrow">PASO 1 · EMPEZAR</p><h2>De archivo bruto a señales explicables.</h2></div>
 <section class="workspace">
   <article class="upload-card">
     <div class="card-top"><span class="step">01</span><span class="status-dot">LISTO</span></div>
     <h2>Carga tus operaciones</h2>
-    <p>Selecciona un CSV de hasta 10 MB. El análisis ocurre dentro de esta computadora; ningún registro sale a Internet.</p>
+    <p>Selecciona un archivo CSV de hasta 10 MB. Puedes abrir y guardar la plantilla con Excel. El análisis ocurre dentro de esta computadora; ningún registro sale a Internet.</p>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="stack">
       <label class="file-control" for="file">Seleccionar archivo CSV</label>
       <input id="file" name="file" type="file" accept=".csv,text/csv" required>
       <button type="submit">Analizar con Guardian <span>→</span></button>
     </form>
     <form action="{{ url_for('demo') }}" method="post"><button class="secondary" type="submit">Probar con datos de demostración</button></form>
+    <a class="template-link" href="{{ url_for('template_csv') }}">Descargar plantilla para Excel</a>
     <details><summary>Ver columnas requeridas</summary><code>{{ required_columns }}</code></details>
   </article>
   <article class="guide-card">
@@ -38,6 +40,23 @@
     </ul>
     <p class="disclaimer">Guardian no acusa a nadie ni toma decisiones automáticas. Una alerta es una pista para investigar, nunca una prueba.</p>
   </article>
+</section>
+
+<section class="rules-card" id="reglas">
+  <div class="card-top"><span class="step">03</span><span class="status-dot">SIN CÓDIGO</span></div>
+  <div class="rules-copy">
+    <p class="eyebrow">REGLAS DE TU EMPRESA</p>
+    <h2>Define qué merece revisión.</h2>
+    <p>Ajusta estos límites a tu operación. GUARDIAN los aplicará al próximo archivo durante esta sesión; no bloquea pagos ni acusa a personas.</p>
+  </div>
+  <form action="{{ url_for('update_rules') }}" method="post" class="rules-grid">
+    <label>Importe alto desde<input name="high_amount" type="number" min="0.01" step="0.01" value="{{ settings.high_amount }}" required><small>Ejemplo: 5000</small></label>
+    <label>Operaciones rápidas<input name="velocity_count" type="number" min="2" step="1" value="{{ settings.velocity_count }}" required><small>Cantidad del mismo cliente</small></label>
+    <label>Dentro de cuántos minutos<input name="velocity_minutes" type="number" min="1" step="1" value="{{ settings.velocity_minutes }}" required><small>Ventana para operaciones rápidas</small></label>
+    <label>Cambio de país en minutos<input name="country_window_minutes" type="number" min="1" step="1" value="{{ settings.country_window_minutes }}" required><small>Tiempo considerado sospechoso</small></label>
+    <label>Clientes por dispositivo<input name="shared_device_customers" type="number" min="2" step="1" value="{{ settings.shared_device_customers }}" required><small>Desde cuántos clientes alertar</small></label>
+    <button type="submit">Guardar reglas</button>
+  </form>
 </section>
 
 {% if results %}

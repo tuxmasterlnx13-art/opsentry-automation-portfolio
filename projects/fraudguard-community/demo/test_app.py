@@ -31,6 +31,30 @@ class AppTests(unittest.TestCase):
         )
         self.assertIn(b"T-1", response.data)
 
+    def test_beginner_template_download(self):
+        app = create_app()
+        app.config.update(TESTING=True, SECRET_KEY="fixture-secret")
+        response = app.test_client().get("/plantilla")
+        self.assertEqual(200, response.status_code)
+        self.assertIn("plantilla_guardian.csv", response.headers["Content-Disposition"])
+        self.assertIn(b"transaction_id,customer_id,amount", response.data)
+
+    def test_rules_can_be_changed_without_code(self):
+        app = create_app()
+        app.config.update(TESTING=True, SECRET_KEY="fixture-secret")
+        client = app.test_client()
+        response = client.post("/reglas", data={
+            "high_amount": "1000",
+            "velocity_count": "3",
+            "velocity_minutes": "15",
+            "country_window_minutes": "45",
+            "shared_device_customers": "2",
+        }, follow_redirects=True)
+        self.assertEqual(200, response.status_code)
+        self.assertIn(b"Reglas guardadas", response.data)
+        client.post("/demo", follow_redirects=True)
+        self.assertEqual("1000", str(app.config["ANALYSIS_SETTINGS"].high_amount))
+
     def test_lan_mode_requires_valid_key(self):
         app = create_app(lan_mode=True, access_key_hash=generate_password_hash("fixture-access-key"))
         app.config.update(TESTING=True, SECRET_KEY="fixture-secret")
