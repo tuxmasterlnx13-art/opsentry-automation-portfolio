@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">REVISIÓN EXPLICABLE DE OPERACIONES</p>
+    <h1>Encuentra patrones sospechosos sin escribir código.</h1>
+    <p class="lead">Carga un CSV, revisa por qué se marcó cada operación y exporta una lista para investigación humana.</p>
+  </div>
+  <div class="mode"><span>Modo</span><strong>{{ 'Empresa / LAN' if lan_mode else 'Solo esta PC' }}</strong></div>
+</section>
+
+<section class="workspace">
+  <article class="upload-card">
+    <span class="step">1</span>
+    <h2>Carga tus operaciones</h2>
+    <p>Máximo 10 MB. El archivo no se envía a ningún servidor externo.</p>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="stack">
+      <label class="file-control" for="file">Seleccionar archivo CSV</label>
+      <input id="file" name="file" type="file" accept=".csv,text/csv" required>
+      <button type="submit">Analizar archivo</button>
+    </form>
+    <form action="{{ url_for('demo') }}" method="post"><button class="secondary" type="submit">Probar con datos de demostración</button></form>
+    <details><summary>Ver columnas requeridas</summary><code>{{ required_columns }}</code></details>
+  </article>
+  <article class="guide-card">
+    <span class="step">2</span>
+    <h2>Interpreta, no adivines</h2>
+    <ul>
+      <li><strong>Alto:</strong> combinación de patrones; revisión prioritaria.</li>
+      <li><strong>Medio:</strong> señal relevante; necesita contexto.</li>
+      <li><strong>Bajo:</strong> señal aislada; observar.</li>
+    </ul>
+    <p class="disclaimer">FraudGuard no acusa a nadie ni toma decisiones automáticas. Una alerta es una pista, no una prueba.</p>
+  </article>
+</section>
+
+{% if results %}
+<section class="results" aria-labelledby="results-title">
+  <div class="section-heading">
+    <div><p class="eyebrow">RESULTADOS · {{ source_name }}</p><h2 id="results-title">Resumen de revisión</h2></div>
+    <a class="button secondary" href="{{ url_for('export') }}">Exportar CSV</a>
+  </div>
+  <div class="metrics">
+    <article><span>Operaciones</span><strong>{{ summary.total }}</strong></article>
+    <article><span>Con señales</span><strong>{{ summary.flagged }}</strong></article>
+    <article class="risk-high"><span>Riesgo alto</span><strong>{{ summary.high }}</strong></article>
+    <article class="risk-medium"><span>Riesgo medio</span><strong>{{ summary.medium }}</strong></article>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Riesgo</th><th>Operación</th><th>Cliente</th><th>Importe</th><th>País</th><th>Razones</th></tr></thead>
+      <tbody>
+      {% for item in results %}
+        <tr>
+          <td><span class="badge {{ item.level|lower|replace(' ', '-') }}">{{ item.level }} · {{ item.score }}</span></td>
+          <td><strong>{{ item.transaction_id }}</strong><small>{{ item.timestamp }}</small></td>
+          <td>{{ item.customer_id }}</td><td>{{ item.amount }}</td><td>{{ item.country }}</td>
+          <td><ul class="reasons">{% for reason in item.reasons %}<li>{{ reason }}</li>{% endfor %}</ul></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+

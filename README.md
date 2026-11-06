@@ -13,6 +13,7 @@ Safely designed operations tooling for ISP audit, remediation, monitoring, and r
 | [Router & Serial Automation](projects/router-serial-automation/README.md) | Diagnoses and safely stages router, plan, and serial corrections. | Checkpoints, resumable queues, pilots, reconciliation, human approval gates. |
 | [Automation Orchestrator](projects/automation-orchestrator/README.md) | Coordinates specialized workers over a persistent queue. | SQLite concurrency, finite workflows, recovery, offline tests. |
 | [Audit Reporting](projects/audit-reporting/README.md) | Produces daily/weekly reports and optional notifications. | Deterministic reporting, testable formatting, separation of config and runtime state. |
+| [FraudGuard Community](projects/fraudguard-community/README.md) | Instalable visual para revisar patrones de fraude en CSV sin enviar datos a la nube. | Flask, motor explicable, acceso LAN protegido, PyInstaller e instalador Inno Setup. |
 
 ## Safety model
 

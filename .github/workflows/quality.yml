@@ -17,9 +17,13 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: projects/operations-dashboard/demo/requirements.txt
+          cache-dependency-path: |
+            projects/operations-dashboard/demo/requirements.txt
+            projects/fraudguard-community/demo/requirements.txt
       - name: Install demo dependencies
-        run: python -m pip install -r projects/operations-dashboard/demo/requirements.txt
+        run: |
+          python -m pip install -r projects/operations-dashboard/demo/requirements.txt
+          python -m pip install -r projects/fraudguard-community/demo/requirements.txt
       - name: Verify public tree
         shell: pwsh
         run: ./tools/verify-public.ps1

@@ -44,4 +44,7 @@ __pycache__/
 .mypy_cache/
 dist/
 build/
+output/
+.build-venv/
+*.exe
 

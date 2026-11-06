@@ -7,7 +7,7 @@ $errors = [System.Collections.Generic.List[string]]::new()
 
 $forbiddenExtensions = @('.csv', '.xlsx', '.xls', '.db', '.sqlite', '.sqlite3', '.har', '.trace', '.zip', '.pem', '.p12', '.pfx')
 $forbiddenSegments = @('sesiones', 'runs', 'state', 'logs', 'evidence', 'backups', 'seguridad')
-$scanExcludedSegments = @('.git', 'node_modules', 'venv', '.venv', '__pycache__')
+$scanExcludedSegments = @('.git', 'node_modules', 'venv', '.venv', '.build-venv', 'build', 'dist', 'output', '__pycache__')
 $textExtensions = @('.py', '.js', '.mjs', '.ts', '.tsx', '.json', '.yaml', '.yml', '.md', '.txt', '.ps1', '.cmd', '.html', '.css', '.toml', '.ini', '.example')
 
 $files = Get-ChildItem $root -Recurse -File -Force | Where-Object {
