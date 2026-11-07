@@ -1,0 +1,41 @@
+name: Business or hiring inquiry
+description: Discuss a safe proof of concept, integration, consulting engagement, or role
+title: "[Business]: "
+labels: [business-inquiry]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest. Describe the goal without posting credentials, customer records, internal URLs, or confidential documents.
+  - type: dropdown
+    id: inquiry_type
+    attributes:
+      label: Type of inquiry
+      options:
+        - Hiring opportunity
+        - Consulting or implementation
+        - Product demonstration
+        - Open-source collaboration
+        - Other professional inquiry
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What outcome would you like to achieve?
+      placeholder: We would like to evaluate GUARDIAN with synthetic data for...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and constraints
+      description: Mention operating system, approximate scale, security requirements, and timeline. Do not include secrets.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-data confirmation
+      options:
+        - label: I have not included credentials, customer data, or confidential information.
+          required: true

@@ -5,7 +5,11 @@ updates:
     schedule:
       interval: monthly
   - package-ecosystem: pip
-    directory: /projects/operations-dashboard
+    directory: /projects/operations-dashboard/demo
+    schedule:
+      interval: monthly
+  - package-ecosystem: pip
+    directory: /projects/fraudguard-community/demo
     schedule:
       interval: monthly
 
