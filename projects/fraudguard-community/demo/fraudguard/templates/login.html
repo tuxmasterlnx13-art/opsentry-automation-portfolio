@@ -6,7 +6,7 @@
   <p class="eyebrow">GUARDIAN · ACCESO DE EMPRESA</p>
   <h1>Ingresa la clave compartida</h1>
   <p>El administrador de la instalación puede darte esta clave. No la envíes fuera de la empresa.</p>
-  <form method="post" class="stack">
+  <form method="post" class="stack"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <label for="access_key">Clave de acceso</label>
     <input id="access_key" name="access_key" type="password" autocomplete="current-password" required autofocus>
     <button type="submit">Entrar</button>

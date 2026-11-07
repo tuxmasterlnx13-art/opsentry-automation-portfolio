@@ -11,10 +11,10 @@
   <div class="nav-wrap">
     <header class="topbar">
       <a class="brand" href="{{ url_for('index') }}" aria-label="Guardian, inicio">
-        <img src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="" width="42" height="42">
-        <span><strong>GUARDIAN</strong><small>Fraud Intelligence</small></span>
+        <img src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="" width="48" height="48">
+        <span><strong>GUARDIAN</strong><small data-i18n="brand_tag">Monitor de inconsistencias</small></span>
       </a>
-      <span class="privacy"><i></i> Procesamiento local</span>
+      <div class="topbar-actions"><span class="privacy"><i></i><span data-i18n="local_only">Procesamiento local</span></span><button class="utility-button" id="themeToggle" type="button" aria-label="Cambiar tema">☼ <span data-i18n="theme">Modo claro</span></button><label class="language-control"><span class="sr-only">Idioma</span><select class="utility-button" id="languageSelect" aria-label="Idioma"><option value="es">Español</option><option value="en">English</option><option value="ru">Русский</option><option value="pt">Português</option><option value="fr">Français</option></select></label></div>
     </header>
   </div>
   <main class="shell">
@@ -23,7 +23,9 @@
     {% endwith %}
     {% block content %}{% endblock %}
   </main>
-  <footer><span>GUARDIAN COMMUNITY</span><span>Explicable · Local · Abierto</span></footer>
+  <footer><span>GUARDIAN COMMUNITY</span><span data-i18n="footer_line">Explicable · Local · Abierto</span></footer>
+  <script src="{{ url_for('static', filename='app.js', v='0.4.0') }}" defer></script>
+  <script src="{{ url_for('static', filename='i18n.js', v='0.4.0') }}" defer></script>
 </body>
 </html>
 

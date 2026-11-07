@@ -51,4 +51,4 @@ jobs:
             "projects/fraudguard-community/installer/output/Guardian-Community-Setup.exe" `
             "projects/fraudguard-community/installer/output/SHA256SUMS.txt" `
             --title "GUARDIAN Community $env:GITHUB_REF_NAME" `
-            --notes-file "projects/fraudguard-community/RELEASE_NOTES_0.3.0.md"
+            --notes-file "projects/fraudguard-community/RELEASE_NOTES_0.4.0.md"

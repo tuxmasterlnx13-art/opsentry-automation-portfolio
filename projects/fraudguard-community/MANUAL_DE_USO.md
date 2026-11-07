@@ -1,87 +1,62 @@
-# Manual de uso — GUARDIAN Community
+# GUARDIAN — manual de uso operativo
 
-> Detecta señales que merecen investigación sin enviar tus operaciones a la nube y sin escribir código.
+## 1. Instalar y abrir
 
-## Inicio rápido en 5 minutos
+Ejecuta Guardian-Community-Setup.exe, sigue el asistente y abre GUARDIAN desde Inicio. Se abrirá en el navegador de esta computadora.
 
-1. Instala GUARDIAN con **Siguiente → Siguiente → Instalar → Finalizar**.
-2. Abre **GUARDIAN Community** desde el escritorio o el menú Inicio.
-3. Pulsa **Probar con datos de demostración** para conocer el informe sin usar datos reales.
-4. Descarga **Plantilla para Excel** dentro de la aplicación.
-5. Sustituye el ejemplo por tus operaciones, guarda como CSV y pulsa **Analizar con Guardian**.
+## 2. Preparar las dos fuentes
 
-GUARDIAN no declara que exista fraude. Ordena señales para que una persona investigue primero los casos con mayor riesgo.
+El archivo de ventas representa lo que debía ocurrir. El archivo del banco/procesador representa lo que ese proveedor informa. Ambos deben contener la misma referencia del pago.
 
-## Qué archivo debes subir
+| Campo | Ventas | Procesador | Ejemplos de encabezado admitidos |
+|---|---|---|---|
+| Referencia | transaction_id | transaction_id | Referencia, payment_id, ID de pago, id_orden |
+| Comercio | merchant_id, opcional | — | Comercio, Tienda, merchant |
+| Importe | expected_amount | charged_amount | Importe esperado, Monto cobrado, amount |
+| Moneda | currency | currency | Moneda, Divisa, currency_code |
+| Estado | expected_status | actual_status | Estado esperado, Estado del pago, status |
+| Fecha de liquidación | — | settled_at | Fecha de liquidación, paid_at |
 
-Usa un archivo `.csv` UTF-8 de hasta 10 MB. Una fila representa una operación y la primera fila conserva exactamente estos nombres:
+En cada fuente el encabezado genérico amount o status se interpreta según el papel del archivo. Dos columnas que representan el mismo campo se rechazan: hay que distinguirlas antes de cargar.
 
-| Columna | Qué debes colocar | Ejemplo |
-|---|---|---|
-| `transaction_id` | Identificador único de la operación | `VENTA-10025` |
-| `customer_id` | Identificador interno del cliente | `CLIENTE-204` |
-| `amount` | Importe, sin símbolo de moneda | `1250.50` |
-| `timestamp` | Fecha y hora en formato ISO | `2026-11-06T10:15:00` |
-| `country` | País, preferentemente código de dos letras | `BO` |
-| `device_id` | Identificador del equipo, navegador o dispositivo | `DISPOSITIVO-88` |
-| `payment_method` | Medio de pago | `card`, `wallet` o `transfer` |
+Exporta desde Excel como CSV UTF-8. Se reconocen coma, punto y coma y tabulación. Una fila por registro, sin títulos decorativos encima del encabezado. Máximo 10 MB por solicitud y 50.000 filas por reporte. La referencia debe conservarse como texto, incluidos ceros iniciales.
 
-### Prepararlo con Excel
+Importes admitidos: 120, 120.50, 120,50, 1.234,56 y 1,234.56. Usa cifras sin símbolo monetario. Un formato ambiguo se señala; no se adivina. La moneda debe ser un código como BOB, USD o EUR.
 
-1. Descarga `plantilla_guardian.csv` desde GUARDIAN.
-2. Ábrela con Excel.
-3. Conserva los títulos de la primera fila y reemplaza la fila de ejemplo.
-4. Agrega una operación por fila.
-5. Elige **Archivo → Guardar como → CSV UTF-8 (delimitado por comas)**.
-6. Carga ese archivo en GUARDIAN.
+## 3. Conciliar
 
-No incluyas contraseñas, números completos de tarjetas, documentos de identidad ni otros secretos. Usa identificadores internos cuando sea posible.
+En **Compara ventas contra el procesador**, selecciona ambos CSV y pulsa **Conciliar los dos reportes**. Puedes descargar dos ejemplos desde esa misma sección para aprender el formato.
 
-## Cómo asignar reglas sin programar
+Las referencias se cruzan exactamente después de quitar espacios exteriores. Si una referencia se repite, el resultado indica cuántas filas la contienen y solicita revisión; no declara una coincidencia correcta eligiendo una fila al azar.
 
-En la pantalla principal busca **Reglas de tu empresa**, cambia los números y pulsa **Guardar reglas**. Los nuevos valores se aplican al siguiente análisis durante esa sesión. Al cerrar GUARDIAN se recuperan los valores iniciales.
+## 4. Interpretar los estados
 
-| Regla | Valor inicial | Cuándo genera una señal |
-|---|---:|---|
-| Importe alto | 5000 | La operación alcanza o supera el importe indicado |
-| Operaciones rápidas | 4 en 10 min | El mismo cliente realiza varias operaciones en poco tiempo |
-| Cambio rápido de país | 60 min | Un cliente aparece en más de un país dentro de la ventana |
-| Dispositivo compartido | 3 clientes | Un dispositivo es usado por varias identidades |
-| ID duplicado | Siempre activo | El mismo identificador de operación aparece más de una vez |
-
-Ejemplo: si tu negocio considera inusual una compra superior a 1.000, escribe `1000` en **Importe alto desde**. Si el comportamiento normal varía por temporada o país, valida los límites con las áreas de fraude, riesgo y cumplimiento antes de usarlos operativamente.
-
-## Cómo leer el informe
-
-- **Alto:** combinación de patrones; revisar con prioridad.
-- **Medio:** señal relevante que necesita contexto.
-- **Bajo:** señal aislada; observar o contrastar.
-- **Sin alerta:** ninguna regla configurada coincidió.
-
-Cada fila explica sus razones. Pulsa **Exportar CSV** para entregar los resultados al equipo que realizará la investigación.
-
-## Acceso de empresa
-
-- **GUARDIAN Community:** abre el sistema únicamente en esta computadora.
-- **GUARDIAN — acceso de empresa:** permite acceso desde la red local y solicita una clave compartida.
-- **GUARDIAN — restablecer clave de empresa:** crea una clave nueva si se pierde la anterior.
-
-No expongas el modo de red directamente a Internet. Una implantación remota necesita HTTPS, identidades individuales, registro de auditoría y una revisión profesional de seguridad.
-
-## Problemas frecuentes
-
-| Mensaje o situación | Solución |
+| Estado | Significado |
 |---|---|
-| “Faltan columnas” | Compara la primera fila con la tabla de este manual |
-| “Solo se aceptan archivos CSV” | Guarda desde Excel como CSV UTF-8 |
-| Importe o fecha inválidos | Usa `1250.50` y `AAAA-MM-DDTHH:MM:SS` |
-| No aparece ninguna alerta | Revisa los límites o prueba primero la demostración |
-| Otra persona no puede entrar | Confirma que abriste **acceso de empresa** y que ambos equipos están en la misma red |
+| approved / aprobado / autorizado | Autorización, todavía no confirma cobro ni abono |
+| paid / pagado / cobrado / captured | Cobro registrado, distinto de liquidación |
+| settled / liquidado / acreditado | Liquidación informada en el reporte |
+| declined / rejected / rechazado / failed | Rechazo o fallo |
+| pending / pendiente / processing | Proceso todavía sin completar |
+| refunded / reembolsado | Devolución que debe revisarse |
+| chargeback / contracargo | Disputa o reversión que debe revisarse |
 
-## Uso responsable
+Un estado no reconocido genera revisión. Que dos importes coincidan no prueba que el dinero haya llegado: el estado también debe corresponder a lo esperado. GUARDIAN usa los datos de los archivos; comprueba el abono definitivo con tu proveedor si su reporte no lo acredita.
 
-GUARDIAN es una herramienta de priorización, no una decisión automática. Una alerta nunca debe ser la única razón para rechazar pagos, bloquear cuentas o acusar a una persona. Documenta la revisión humana y respeta las leyes de privacidad aplicables.
+## 5. Trabajar las diferencias
 
-## Soporte y colaboración
+El dashboard muestra referencias revisadas, diferencias, rechazos y casos abiertos. Cada fila explica qué no coincide. Registra un responsable y una nota, y selecciona Pendiente, Confirmada, Resuelta o Falso positivo. Confirmada sigue contando como trabajo abierto.
 
-Para informar un problema, proponer una regla o conversar sobre una implantación empresarial, abre un **Issue** en el repositorio público. No adjuntes datos reales de clientes.
+**Historial** muestra los últimos veinte cambios del caso con fecha UTC. Las revisiones se vinculan al análisis, por lo que una referencia de otro período no hereda automáticamente la resolución anterior.
+
+## 6. Volver y exportar
+
+GUARDIAN guarda cada análisis en esta computadora. **Conciliaciones guardadas** permite abrir los últimos 25; el almacenamiento conserva los demás. El archivo exportado incluye resultado, responsable, estado de revisión y nota. Los textos peligrosos para Excel se exportan como texto.
+
+Al cerrar y abrir GUARDIAN se recupera el último análisis. En Windows el archivo operativo está en **%LOCALAPPDATA%/GuardianCommunity/guardian-reviews.sqlite3**. Para conservar un respaldo, cierra GUARDIAN y copia ese archivo a una ubicación de respaldo bajo tu control.
+
+## Alcance
+
+El uso individual funciona localmente. El acceso LAN usa clave compartida y no equivale a cuentas individuales con identidad auditada. No expongas ese modo directamente a Internet. Los datos y notas permanecen en el equipo que ejecuta GUARDIAN.
+
+Comisiones, netos frente a brutos, pagos parciales, conversiones de moneda y varios eventos por referencia necesitan reglas del proveedor. La aplicación identifica la ambigüedad para revisión humana; no inventa su significado. Si el banco y ventas no tienen una referencia común, primero hay que acordar el campo de cruce.

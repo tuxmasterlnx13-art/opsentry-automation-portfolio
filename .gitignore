@@ -31,6 +31,8 @@ sesiones/
 *.zip
 *.png
 !projects/fraudguard-community/demo/fraudguard/static/guardian-emblem.png
+!projects/fraudguard-community/demo/fraudguard/static/guardian-steel-sword.png
+!projects/fraudguard-community/demo/fraudguard/static/guardian-helmet-layer.png
 *.jpg
 *.jpeg
 *.mp4

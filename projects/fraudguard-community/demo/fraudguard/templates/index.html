@@ -2,85 +2,111 @@
 {% block content %}
 <section class="hero">
   <div class="hero-copy">
-    <p class="eyebrow"><span></span> GUARDIAN / DETECCIÓN DE FRAUDE</p>
-    <h1>Fraude visible.<br><em>Decisiones humanas.</em></h1>
-    <p class="lead">Un observatorio privado para descubrir patrones sospechosos, entender cada señal y proteger tu empresa sin escribir una sola línea de código.</p>
-    <a class="button hero-action" href="#analizar">Comenzar ahora <span>↓</span></a>
+    <p class="eyebrow"><span></span> GUARDIAN / CONCILIACIÓN DE PAGOS</p>
+    <h1>¿Se cobró?<br><em>¿Se liquidó?</em></h1>
+    <p class="lead">Compara lo que tu negocio esperaba cobrar con el estado que informa el procesador. Encuentra pagos fallidos, pendientes, montos distintos y liquidaciones sin comprobante.</p>
+    <a class="button hero-action" href="#cruce">Comenzar ahora <span>↓</span></a>
     <div class="hero-notes"><span>Sin nube</span><span>Sin caja negra</span><span>Datos bajo tu control</span></div>
   </div>
   <div class="guardian-stage" aria-label="Guardian, motor de inteligencia antifraude">
-    <img src="{{ url_for('static', filename='guardian-emblem.png') }}" alt="Casco Guardian con dos espadas cruzadas">
+    {% include "_crest_animation.html" %}
     <div class="guardian-word">GUARDIAN</div>
     <div class="stage-meta"><span>EDICIÓN GRATUITA</span><strong>{{ 'RED EMPRESARIAL' if lan_mode else 'SOLO ESTA PC' }}</strong></div>
   </div>
 </section>
 
-<div class="section-intro" id="analizar"><p class="eyebrow">PASO 1 · EMPEZAR</p><h2>De archivo bruto a señales explicables.</h2></div>
+<div class="section-intro" id="analizar"><p class="eyebrow">TU RECORRIDO · 3 PASOS</p><h2>Elige qué revisar y empieza con un ejemplo.</h2></div>
 <section class="workspace">
   <article class="upload-card">
-    <div class="card-top"><span class="step">01</span><span class="status-dot">LISTO</span></div>
-    <h2>Carga tus operaciones</h2>
-    <p>Selecciona un archivo CSV de hasta 10 MB. Puedes abrir y guardar la plantilla con Excel. El análisis ocurre dentro de esta computadora; ningún registro sale a Internet.</p>
-    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="stack">
+    <div class="card-top"><span class="step">PASO 1</span><span class="status-dot">ELIGE PERFIL</span></div>
+    <h2>¿Qué quieres revisar?</h2>
+    <div class="profile-picker">
+      {% for key, item in profiles.items() %}<a class="profile-choice {{ 'selected' if key == active_profile else '' }}" href="{{ url_for('index', profile=key) }}#analizar"><strong>{{ item.name }}</strong><span>{{ item.description }}</span></a>{% endfor %}
+    </div>
+    <div class="step-note"><b>2</b><div><strong>Prueba con datos de ejemplo</strong><span>Es un archivo inventado que muestra el resultado sin usar datos de tu empresa.</span></div></div>
+    <form action="{{ url_for('demo') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="profile" value="{{ active_profile }}"><button class="demo-button" type="submit">Ver dashboard de ejemplo →</button></form>
+    <a class="template-link" href="{{ url_for('example_csv', profile=active_profile) }}">Descargar este ejemplo CSV</a>
+    <div class="step-note"><b>3</b><div><strong>Sube tu archivo</strong><span>CSV UTF-8, máximo 10 MB. Lo revisamos en esta computadora.</span></div></div>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="stack"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="profile" value="{{ active_profile }}">
       <label class="file-control" for="file">Seleccionar archivo CSV</label>
       <input id="file" name="file" type="file" accept=".csv,text/csv" required>
-      <button type="submit">Analizar con Guardian <span>→</span></button>
+      <button type="submit">Analizar mi archivo <span>→</span></button>
     </form>
-    <form action="{{ url_for('demo') }}" method="post"><button class="secondary" type="submit">Probar con datos de demostración</button></form>
-    <a class="template-link" href="{{ url_for('template_csv') }}">Descargar plantilla para Excel</a>
-    <details><summary>Ver columnas requeridas</summary><code>{{ required_columns }}</code></details>
+    <details><summary>¿Qué formato necesita mi CSV?</summary>
+      {% if active_profile == 'transactions' %}<p>Una fila por pago. Encabezados exactos:</p><code>transaction_id,merchant_id,expected_amount,charged_amount,currency,expected_status,actual_status,created_at,settled_at</code>
+      {% elif active_profile == 'audit' %}<p>Una fila por registro del sistema. Encabezados exactos:</p><code>record_id,entity_id,category,current_value,expected_value,status,updated_at</code>
+      {% else %}<p>Un archivo genérico. Primera columna: identificador; las demás pueden tener cualquier nombre. Busca duplicados, espacios, vacíos y errores frecuentes.</p><a href="{{ url_for('example_csv', profile='generic') }}">Bajar ejemplo genérico</a>{% endif %}
+      <p>Abre el ejemplo en Excel, conserva la fila de títulos, pega tus datos y guarda como CSV UTF-8.</p>
+    </details>
   </article>
   <article class="guide-card">
-    <div class="card-top"><span class="step">02</span><span class="status-dot violet">EXPLICABLE</span></div>
-    <h2>Interpreta. No adivines.</h2>
-    <ul>
-      <li><strong>Alto:</strong> combinación de patrones; revisión prioritaria.</li>
-      <li><strong>Medio:</strong> señal relevante; necesita contexto.</li>
-      <li><strong>Bajo:</strong> señal aislada; observar.</li>
-    </ul>
-    <p class="disclaimer">Guardian no acusa a nadie ni toma decisiones automáticas. Una alerta es una pista para investigar, nunca una prueba.</p>
+    <div class="card-top"><span class="step">PERFIL ACTUAL</span><span class="status-dot violet">ADAPTABLE</span></div>
+    <h2>{{ profile.name }}</h2>
+    <p>{{ profile.description }}</p>
+    <div class="steps-list"><div><b>1</b><span>Selecciona el perfil que coincide con tus datos.</span></div><div><b>2</b><span>Abre el CSV de ejemplo y entiende sus columnas.</span></div><div><b>3</b><span>Prueba el análisis, mira las alertas y carga tu archivo.</span></div></div>
+    <p class="disclaimer">Cada alerta explica qué encontró. Alto, medio y bajo ayudan a ordenar la revisión; no son una sentencia automática.</p>
   </article>
+</section>
+
+<section class="rules-card source-compare" id="cruce">
+  <p class="eyebrow">CONCILIACIÓN CON EVIDENCIA</p>
+  <h2>Compara ventas contra el procesador.</h2>
+  <p>Ambos reportes deben compartir la misma referencia del pago. No se cruzan pagos por parecido del nombre o del importe.</p>
+  <a class="button secondary" href="{{ url_for('example_csv', profile='ventas') }}">Descargar ejemplo de ventas</a>
+  <a class="button secondary" href="{{ url_for('example_csv', profile='procesador') }}">Descargar ejemplo del procesador</a>
+  <p>Sube dos reportes. GUARDIAN cruza la referencia de pago y marca ventas que no aparecen en el procesador, cobros sin venta, importes distintos, moneda diferente, rechazos y referencias repetidas.</p>
+  <div class="format-pair"><div><strong>Archivo de ventas</strong><code>transaction_id,merchant_id,expected_amount,currency,expected_status</code></div><div><strong>Archivo del procesador</strong><code>transaction_id,charged_amount,currency,actual_status,settled_at</code></div></div>
+  <form action="{{ url_for('reconcile_sources') }}" method="post" enctype="multipart/form-data" class="source-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>1 · Reporte de ventas<input type="file" name="sales_file" accept=".csv,text/csv" required></label>
+    <label>2 · Reporte del procesador<input type="file" name="processor_file" accept=".csv,text/csv" required></label>
+    <button type="submit">Conciliar los dos reportes →</button>
+  </form>
 </section>
 
 <section class="rules-card" id="reglas">
   <div class="card-top"><span class="step">03</span><span class="status-dot">SIN CÓDIGO</span></div>
   <div class="rules-copy">
-    <p class="eyebrow">REGLAS DE TU EMPRESA</p>
-    <h2>Define qué merece revisión.</h2>
-    <p>Ajusta estos límites a tu operación. GUARDIAN los aplicará al próximo archivo durante esta sesión; no bloquea pagos ni acusa a personas.</p>
+    <p class="eyebrow">PERFIL DE CONCILIACIÓN</p>
+    <h2>Qué considera una inconsistencia.</h2>
+    <p>Guardian compara esperado contra real, identifica pagos rechazados que debían completarse, pendientes antiguas, referencias repetidas y pagos sin comprobante de liquidación.</p>
   </div>
-  <form action="{{ url_for('update_rules') }}" method="post" class="rules-grid">
-    <label>Importe alto desde<input name="high_amount" type="number" min="0.01" step="0.01" value="{{ settings.high_amount }}" required><small>Ejemplo: 5000</small></label>
-    <label>Operaciones rápidas<input name="velocity_count" type="number" min="2" step="1" value="{{ settings.velocity_count }}" required><small>Cantidad del mismo cliente</small></label>
-    <label>Dentro de cuántos minutos<input name="velocity_minutes" type="number" min="1" step="1" value="{{ settings.velocity_minutes }}" required><small>Ventana para operaciones rápidas</small></label>
-    <label>Cambio de país en minutos<input name="country_window_minutes" type="number" min="1" step="1" value="{{ settings.country_window_minutes }}" required><small>Tiempo considerado sospechoso</small></label>
-    <label>Clientes por dispositivo<input name="shared_device_customers" type="number" min="2" step="1" value="{{ settings.shared_device_customers }}" required><small>Desde cuántos clientes alertar</small></label>
-    <button type="submit">Guardar reglas</button>
-  </form>
+  <div class="rules-grid">
+    <div class="rule-explainer"><strong>Pago no completado</strong><span>El estado esperado era pagado/liquidado y el procesador informa rechazado o fallido.</span></div>
+    <div class="rule-explainer"><strong>Importe diferente</strong><span>El importe cobrado no coincide con el importe esperado.</span></div>
+    <div class="rule-explainer"><strong>Pendiente vencida</strong><span>El estado sigue pendiente por más de 24 horas respecto a las fechas del mismo archivo.</span></div>
+    <div class="rule-explainer"><strong>Duplicado o sin comprobante</strong><span>Referencia repetida o pago marcado como liquidado sin fecha de liquidación.</span></div>
+  </div>
 </section>
 
+{% if runs %}<section class="rules-card"><h2>Conciliaciones guardadas</h2><p>Abre un análisis anterior. Los resultados y revisiones se conservan en esta computadora.</p><div class="saved-runs">{% for run in runs %}<a class="button secondary" href="{{ url_for('index', run=run[0]) }}#dashboard">{{ run[2] }} UTC · {{ run[1] }} {{ '✓' if run[0] == run_id else '' }}</a>{% endfor %}</div></section>{% endif %}
 {% if results %}
-<section class="results" aria-labelledby="results-title">
+<section class="results" aria-labelledby="results-title" id="dashboard">
   <div class="section-heading">
-    <div><p class="eyebrow">INTELLIGENCE REPORT · {{ source_name }}</p><h2 id="results-title">Mapa de señales</h2></div>
+    <div><p class="eyebrow">DASHBOARD · {{ source_name }}</p><h2 id="results-title">Resumen de inconsistencias</h2></div>
     <a class="button secondary" href="{{ url_for('export') }}">Exportar CSV</a>
   </div>
   <div class="metrics">
-    <article><span>Operaciones</span><strong>{{ summary.total }}</strong></article>
-    <article><span>Con señales</span><strong>{{ summary.flagged }}</strong></article>
+    <article><span>Registros revisados</span><strong>{{ summary.total }}</strong></article>
+    <article><span>Necesitan atención</span><strong>{{ summary.flagged }}</strong></article>
     <article class="risk-high"><span>Riesgo alto</span><strong>{{ summary.high }}</strong></article>
     <article class="risk-medium"><span>Riesgo medio</span><strong>{{ summary.medium }}</strong></article>
+    <article><span>Ventas no encontradas</span><strong>{{ missing }}</strong></article>
+    <article><span>Importe diferente</span><strong>{{ amount_mismatch }}</strong></article>
+    <article><span>Pago fallido/rechazado</span><strong>{{ failed }}</strong></article>
+    <article><span>Casos sin revisar</span><strong>{{ review_open }}</strong></article>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Riesgo</th><th>Operación</th><th>Cliente</th><th>Importe</th><th>País</th><th>Razones</th></tr></thead>
+      <thead><tr><th>Prioridad</th><th>Referencia</th><th>Comercio</th><th>Moneda</th><th>Cobrado / esperado</th><th>Qué pasó</th><th>Revisión</th></tr></thead>
       <tbody>
       {% for item in results %}
         <tr>
           <td><span class="badge {{ item.level|lower|replace(' ', '-') }}">{{ item.level }} · {{ item.score }}</span></td>
-          <td><strong>{{ item.transaction_id }}</strong><small>{{ item.timestamp }}</small></td>
-          <td>{{ item.customer_id }}</td><td>{{ item.amount }}</td><td>{{ item.country }}</td>
+          <td><strong data-no-translate>{{ item.record_id }}</strong><small>{{ item.timestamp }}</small></td>
+          <td data-no-translate>{{ item.subject }}</td><td data-no-translate>{{ item.category }}</td><td>{{ item.value }}<small>Esperado: {{ item.expected_value }}</small></td>
           <td><ul class="reasons">{% for reason in item.reasons %}<li>{{ reason }}</li>{% endfor %}</ul></td>
+          <td><form class="review-form" action="{{ url_for('save_review', transaction_id=item.record_id) }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="run_id" value="{{ run_id }}"><select name="review_status"><option value="Pendiente" {{ 'selected' if item.review_status == 'Pendiente' }}>Pendiente</option><option value="Confirmada" {{ 'selected' if item.review_status == 'Confirmada' }}>Confirmada</option><option value="Resuelta" {{ 'selected' if item.review_status == 'Resuelta' }}>Resuelta</option><option value="Falso positivo" {{ 'selected' if item.review_status == 'Falso positivo' }}>Falso positivo</option></select><input name="assigned_to" placeholder="Responsable" value="{{ item.assigned_to }}"><input name="note" placeholder="Nota de seguimiento" value="{{ item.note }}"><small>{{ item.history_count }} cambios · {{ item.review_updated }}</small><button type="submit">Guardar</button></form><details><summary>Historial</summary>{% for event in item.history %}<p><strong>{{ event[0] }} UTC · {{ event[1] }}</strong><br><span data-no-translate>{{ event[2] }} · {{ event[3] }}</span></p>{% endfor %}</details></td>
         </tr>
       {% endfor %}
       </tbody>

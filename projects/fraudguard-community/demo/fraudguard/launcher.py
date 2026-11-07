@@ -69,7 +69,7 @@ def main() -> None:
     args = parser.parse_args()
 
     config, new_key = load_or_create_config(require_access_key=args.lan, reset_access_key=args.reset_access_key)
-    app = create_app(lan_mode=args.lan, access_key_hash=config.get("access_key_hash"))
+    app = create_app(lan_mode=args.lan, access_key_hash=config.get("access_key_hash"), review_db=str(app_data_dir() / "guardian-reviews.sqlite3"))
     app.secret_key = config["secret_key"]
     host = "0.0.0.0" if args.lan else "127.0.0.1"
     local_url = f"http://127.0.0.1:{args.port}"

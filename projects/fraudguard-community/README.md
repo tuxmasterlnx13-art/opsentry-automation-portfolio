@@ -1,87 +1,53 @@
-# GUARDIAN Community
+# GUARDIAN Community 0.4.0
 
-### Fraude visible. Decisiones humanas.
+Conciliación local de ventas y pagos. Importa dos reportes CSV independientes, compara referencias, importes, monedas y estados, y gestiona las diferencias con responsable, notas e historial.
 
-<p align="center">
-  <img src="demo/fraudguard/static/guardian-emblem.png" width="360" alt="GUARDIAN: casco antiguo con dos espadas">
-</p>
+<p align="center"><img src="demo/fraudguard/static/guardian-emblem.png" width="360" alt="GUARDIAN"></p>
 
-Aplicación de escritorio gratuita y de código abierto para convertir operaciones en señales de fraude explicables. Se instala en Windows con **Siguiente → Siguiente → Finalizar**, funciona localmente y permite ajustar reglas sin programación.
+## Uso operativo
 
-[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-8b5cf6.svg)](LICENSE)
-![Privacidad local](https://img.shields.io/badge/datos-locales-16a34a.svg)
-![Windows](https://img.shields.io/badge/Windows-instalador-2563eb.svg)
-![Sin código](https://img.shields.io/badge/configuración-sin%20código-d97706.svg)
+1. Instala GUARDIAN y abre la aplicación.
+2. En **Compara ventas contra el procesador**, carga el reporte de ventas y el del procesador o banco.
+3. Consulta el dashboard y revisa los casos detectados.
+4. Asigna responsable, registra una nota y marca cada caso como confirmado, resuelto o falso positivo.
+5. Exporta resultados y abre conciliaciones anteriores desde **Conciliaciones guardadas**.
 
-## Pruébalo sin datos reales
+[Manual completo](MANUAL_DE_USO.md) · [Notas 0.4.0](RELEASE_NOTES_0.4.0.md) · [Licencia MIT](LICENSE)
 
-1. Descarga `Guardian-Community-Setup.exe` desde **Releases**.
-2. Instala y abre GUARDIAN.
-3. Pulsa **Probar con datos de demostración**.
-4. Explora el informe y ajusta las reglas visualmente.
+## Lo que comprueba
 
-Consulta el [manual completo en español](MANUAL_DE_USO.md) para preparar Excel/CSV, asignar reglas, interpretar resultados y habilitar acceso en la red de una empresa.
+- Ventas ausentes del reporte de pagos y pagos sin venta asociada.
+- Importes y monedas diferentes.
+- Referencias repetidas en cualquiera de las dos fuentes; se marcan como ambiguas.
+- Pagos aprobados que todavía no están cobrados o liquidados.
+- Rechazos, pendientes, reembolsos y contracargos.
+- Estados desconocidos, referencias vacías, importes inválidos y columnas ambiguas.
 
-## Qué resuelve
+Los reportes deben compartir una referencia común. Los encabezados admiten sinónimos frecuentes en español e inglés; si no se reconocen, la carga explica qué campo falta. No se inventan coincidencias por nombre o importe.
 
-| Señal explicable | Ejemplo de uso |
-|---|---|
-| Transacción duplicada | Errores, reintentos o abuso de identificadores |
-| Importe inusualmente alto | Priorizar operaciones fuera del patrón del negocio |
-| Alta velocidad | Varias operaciones del mismo cliente en pocos minutos |
-| Cambio rápido de país | Movimientos geográficos incompatibles en una ventana corta |
-| Dispositivo compartido | Varias identidades usando el mismo equipo |
+## Persistencia y privacidad
 
-Cada resultado incluye puntuación, nivel y razones legibles. Una alerta es una pista para revisión humana, nunca una prueba ni una acusación.
+Las conciliaciones, notas e historial se guardan en SQLite dentro de la carpeta local de GUARDIAN. Al reiniciar pueden abrirse los análisis guardados. Las revisiones están separadas por conciliación. El modo local escucha solo en 127.0.0.1; no envía reportes a servicios externos.
 
-## Diseñado para adopción real
+## Alcance comprobado
 
-- Instalador y asistente en español.
-- Plantilla CSV compatible con Excel.
-- Demostración sintética integrada.
-- Reglas configurables desde la interfaz.
-- Procesamiento local, sin telemetría y sin nube.
-- Exportación del informe a CSV.
-- Modo individual y modo LAN protegido con clave.
+Procesa reportes CSV de hasta 10 MB y 50.000 filas por archivo. Admite coma, punto y coma y tabulaciones, importes con formatos 1.234,56 y 1,234.56 y estados normalizados. El motor compara lo informado por los reportes; no consulta ni mueve fondos en el banco. No convierte monedas ni concilia automáticamente comisiones o pagos parciales. Esos casos se investigan en la bandeja.
 
-## Formato de entrada
+Los ejemplos integrados son sintéticos y permiten aprender; el importador acepta archivos operativos del usuario con los campos requeridos. La compatibilidad con un proveedor específico se valida con sus exportaciones.
 
-```text
-transaction_id,customer_id,amount,timestamp,country,device_id,payment_method
-```
+## Desarrollo y verificación
 
-El manual explica cada columna con ejemplos. No publiques archivos con datos reales en GitHub.
+Requiere Python 3.12 o posterior.
 
-## Arquitectura auditable
-
-```text
-CSV local → validación → reglas explicables → puntuación → revisión humana → exportación
-```
-
-El motor no depende de un proveedor, modelo opaco ni servicio externo. Las reglas están en [`demo/fraudguard/engine.py`](demo/fraudguard/engine.py) y las pruebas automatizadas cubren el análisis, la interfaz, el acceso LAN y la configuración visual.
-
-## Seguridad y privacidad
-
-- El modo local solo responde en `127.0.0.1`.
-- Los archivos no salen de la computadora.
-- El modo LAN exige una clave compartida.
-- No se incluyen credenciales ni datos reales en el repositorio.
-- No debe publicarse directamente en Internet sin HTTPS, identidad empresarial y revisión profesional.
-
-## Para equipos y empresas
-
-Este proyecto demuestra competencias en automatización, Python, detección de anomalías, UX para usuarios no técnicos, empaquetado de Windows, pruebas y seguridad por diseño.
-
-¿Quieres adaptar las reglas, integrar una fuente de datos, añadir auditoría o preparar una implantación empresarial? Abre un **Issue** con el caso de uso, sin información confidencial. El proyecto está disponible para colaboración y trabajo profesional.
-
-## Desarrollo
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r demo\requirements.txt
-Set-Location demo
+~~~powershell
+python -m pip install -r demo/requirements.txt
+cd demo
 python -m unittest discover -v
 python -m fraudguard.launcher
-```
+~~~
 
-El instalador se genera con `installer/build.ps1`. La licencia es [MIT](LICENSE): puede usarse, estudiarse y modificarse libremente, sin garantía.
+El instalador se genera con **installer/build.ps1** (PyInstaller e Inno Setup). Pruebas verifican conciliación, errores, persistencia tras reiniciar, revisiones por análisis, protección de formularios y acceso LAN.
+
+## Trabajo profesional
+
+Para integraciones, adaptación a reportes de proveedores o contratación, abre una consulta profesional en Issues. No publiques datos de clientes en el repositorio.
