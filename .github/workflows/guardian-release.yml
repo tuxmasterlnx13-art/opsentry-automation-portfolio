@@ -33,7 +33,7 @@ jobs:
           $installer = "projects/fraudguard-community/installer/output/Guardian-Community-Setup.exe"
           $hash = (Get-FileHash $installer -Algorithm SHA256).Hash
           "$hash  Guardian-Community-Setup.exe" | Set-Content "projects/fraudguard-community/installer/output/SHA256SUMS.txt"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: guardian-community-windows
           path: |
