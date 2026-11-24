@@ -36,14 +36,14 @@ try {
 $isccCandidates = @(
     "$env:LOCALAPPDATA\Programs\Inno Setup 7\ISCC.exe",
     "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
-    "$env:ProgramFiles(x86)\Inno Setup 7\ISCC.exe",
-    "$env:ProgramFiles(x86)\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles(x86)}\Inno Setup 7\ISCC.exe",
+    "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
     "$env:ProgramFiles\Inno Setup 7\ISCC.exe",
     "$env:ProgramFiles\Inno Setup 6\ISCC.exe"
 )
 $iscc = $isccCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 if (-not $iscc) {
-    $roots = @("$env:ProgramFiles(x86)", "$env:ProgramFiles", "$env:LOCALAPPDATA\Programs") |
+    $roots = @("${env:ProgramFiles(x86)}", "$env:ProgramFiles", "$env:LOCALAPPDATA\Programs") |
         Where-Object { $_ -and (Test-Path -LiteralPath $_) }
     $iscc = $roots | ForEach-Object {
         Get-ChildItem -LiteralPath $_ -Directory -Filter 'Inno Setup *' -ErrorAction SilentlyContinue
