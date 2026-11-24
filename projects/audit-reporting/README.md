@@ -11,3 +11,9 @@ Daily and weekly reporting automation for operational audit results. Report gene
 
 The public edition omits recipient lists, message history, browser profiles, generated reports, and all live configuration.
 
+## Try it
+
+Run `scripts/run-showcase.ps1` from the repository root. It generates a stable
+Markdown summary from three synthetic records. Report generation is offline;
+delivery to email or messaging services is intentionally outside the demo.
+

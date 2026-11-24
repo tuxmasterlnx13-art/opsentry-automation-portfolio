@@ -48,6 +48,18 @@ python -m fraudguard.launcher
 
 El instalador se genera con **installer/build.ps1** (PyInstaller e Inno Setup). Pruebas verifican conciliación, errores, persistencia tras reiniciar, revisiones por análisis, protección de formularios y acceso LAN.
 
+## Descarga verificada para Windows
+
+Desde la raíz del repositorio ejecuta:
+
+```powershell
+.\scripts\download-guardian.ps1
+```
+
+El script descarga la versión publicada más reciente y comprueba su SHA-256.
+Si prefieres ejecutar desde el código fuente, usa `scripts/setup.ps1` y después
+`.\.venv\Scripts\python.exe .\projects\fraudguard-community\demo\run_fraudguard.py`.
+
 ## Trabajo profesional
 
 Para integraciones, adaptación a reportes de proveedores o contratación, abre una consulta profesional en Issues. No publiques datos de clientes en el repositorio.

@@ -11,7 +11,17 @@ A web application that converts validated network-audit results into accountable
 
 ## Run locally
 
-Create a virtual environment, install the dependencies listed with the source, copy `.env.example` when available, and use synthetic audit fixtures. The public edition intentionally excludes production databases, admin accounts, session keys, exports, and LAN configuration.
+From the repository root:
+
+```powershell
+.\scripts\setup.ps1
+.\.venv\Scripts\python.exe .\projects\operations-dashboard\demo\app.py
+```
+
+Open `http://127.0.0.1:5000`. The JSON endpoint is available at `/api/cases`.
+Linux and macOS users can replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`.
+
+The demo uses three synthetic cases. The public edition intentionally excludes production databases, admin accounts, session keys, exports, and LAN configuration.
 
 ## Portfolio value
 

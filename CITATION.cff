@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If this repository helps your work, cite the project or link to its GitHub page."
+title: "OPSENTRY Automation Portfolio"
+type: software
+authors:
+  - name: "tuxmasterlnx13-art"
+repository-code: "https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio"
+url: "https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio"
+license: MIT
+version: 1.0.0
+date-released: 2026-11-24
+keywords:
+  - operations automation
+  - audit
+  - reconciliation
+  - Python
+  - SQLite
+  - explainable rules

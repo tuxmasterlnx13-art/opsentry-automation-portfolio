@@ -1,65 +1,120 @@
 # OPSENTRY Automation Portfolio
 
-Safely designed operations tooling for ISP audit, remediation, monitoring, and reporting workflows.
+[![Quality and safety](https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio/actions/workflows/quality.yml/badge.svg)](https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio/actions/workflows/quality.yml)
+[![CodeQL](https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio/actions/workflows/codeql.yml/badge.svg)](https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
-> **Publication status:** release candidate. The code is staged from a private operational workspace through an explicit allowlist and automated safety checks. Live credentials, customer data, browser sessions, internal evidence, and production configuration are not part of this repository.
+Runnable, vendor-neutral examples for safer operations automation: audit pipelines, explainable reconciliation, guarded remediation plans, persistent work queues, dashboards, and deterministic reporting.
 
-## Featured release: GUARDIAN Community
+The repository is useful without access to a private network. Every demo runs with synthetic data, every write-oriented workflow stops at a reviewable plan, and CI rejects credentials, customer exports, browser sessions, databases, and private network addresses.
 
-**Fraude visible. Decisiones humanas.** A Windows application that lets non-technical teams upload operations, configure explainable fraud-screening rules, and export a prioritized report without sending records to the cloud.
+> **En español:** contiene demostraciones ejecutables de automatización segura. No incluye datos de clientes ni credenciales. Empieza con `scripts/setup.ps1` y después ejecuta `scripts/run-showcase.ps1`.
 
-- [Explore GUARDIAN](projects/fraudguard-community/README.md)
-- [Read the Spanish user manual](projects/fraudguard-community/MANUAL_DE_USO.md)
-- Install with **Next → Next → Finish**, then try the included synthetic demonstration.
+## Start in two minutes
 
-## What this portfolio demonstrates
+### Windows PowerShell
 
-| Project | Purpose | Engineering highlights |
+```powershell
+git clone https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio.git
+cd opsentry-automation-portfolio
+.\scripts\setup.ps1
+.\scripts\run-showcase.ps1
+```
+
+### Linux or macOS
+
+```bash
+git clone https://github.com/tuxmasterlnx13-art/opsentry-automation-portfolio.git
+cd opsentry-automation-portfolio
+chmod +x scripts/*.sh
+./scripts/setup.sh
+./scripts/run-showcase.sh
+```
+
+The showcase executes four independent examples and creates only temporary synthetic files. To run the visual GUARDIAN application afterwards:
+
+```powershell
+.\.venv\Scripts\python.exe .\projects\fraudguard-community\demo\run_fraudguard.py
+```
+
+On Linux or macOS use `.venv/bin/python` instead.
+
+## Included projects
+
+| Project | What you can run | Main engineering ideas |
 | --- | --- | --- |
-| [Operations Dashboard](projects/operations-dashboard/README.md) | Turns validated audit runs into an assignment, verification, and reporting workflow. | Flask, Argon2 authentication, CSRF protection, revocable sessions, SQLite, role-based access. |
-| [IP Autofix](projects/ip-autofix/README.md) | Collects TR-069 data and prepares a guarded remediation queue. | Playwright, dry-run gates, idempotency, bounded retries, strict IP validation. |
-| [Router & Serial Automation](projects/router-serial-automation/README.md) | Diagnoses and safely stages router, plan, and serial corrections. | Checkpoints, resumable queues, pilots, reconciliation, human approval gates. |
-| [Automation Orchestrator](projects/automation-orchestrator/README.md) | Coordinates specialized workers over a persistent queue. | SQLite concurrency, finite workflows, recovery, offline tests. |
-| [Audit Reporting](projects/audit-reporting/README.md) | Produces daily/weekly reports and optional notifications. | Deterministic reporting, testable formatting, separation of config and runtime state. |
-| [GUARDIAN Community](projects/fraudguard-community/README.md) | Software visual instalable para revisar patrones de fraude sin enviar datos a la nube. | Flask, motor explicable, acceso LAN protegido, PyInstaller e instalador Inno Setup. |
+| [GUARDIAN Community](projects/fraudguard-community/README.md) | Local web application and Windows installer for comparing sales and payment reports, reviewing differences, and exporting results. | Explainable rules, CSV hardening, SQLite persistence, CSRF protection, local-first privacy. |
+| [Operations Dashboard](projects/operations-dashboard/README.md) | Synthetic case dashboard and JSON API. | Small Flask service, server-rendered UI, testable API boundary. |
+| [IP Autofix](projects/ip-autofix/README.md) | Deterministic dry-run planner for authorized IP remediation. | CIDR validation, duplicate prevention, pilot eligibility, no production writes. |
+| [Router & Serial Automation](projects/router-serial-automation/README.md) | Reviewable change-plan generator. | Human approval, exclusions, deterministic output, rollback-friendly evidence. |
+| [Automation Orchestrator](projects/automation-orchestrator/README.md) | Persistent SQLite queue with atomic work claims. | Concurrency control, resumability, ownership-aware completion. |
+| [Audit Reporting](projects/audit-reporting/README.md) | Deterministic Markdown report generator. | Stable summaries, separation of generation and delivery, offline tests. |
+
+## Download GUARDIAN for Windows
+
+Tagged releases build a Windows installer in GitHub Actions and publish it with a SHA-256 checksum. Download and verify the latest release automatically:
+
+```powershell
+.\scripts\download-guardian.ps1
+```
+
+Or on Linux/macOS:
+
+```bash
+./scripts/download-guardian.sh
+```
+
+The downloader refuses an installer whose hash does not match `SHA256SUMS.txt`. You can also open the repository's **Releases** page and verify the checksum manually.
+
+## What the public edition does and does not do
+
+This repository includes reusable algorithms, guarded workflow patterns, synthetic fixtures, tests, documentation, and a complete local reconciliation application. It intentionally excludes production selectors, vendor accounts, live recipient lists, operational databases, customer records, browser profiles, private URLs, and automatic production writes.
+
+To adapt an integration, implement an authorized adapter behind the demonstrated validation and approval gates. Start with a disposable account and synthetic records. Never point a first run at production.
+
+## Useful commands
+
+```powershell
+# Install dependencies and run every offline test
+.\scripts\setup.ps1
+
+# Run the terminal showcase again
+.\scripts\run-showcase.ps1
+
+# Run all tests without reinstalling
+.\scripts\test-all.ps1
+
+# Verify that the public tree contains no forbidden artifacts
+.\tools\verify-public.ps1
+
+# Start the synthetic dashboard
+.\.venv\Scripts\python.exe .\projects\operations-dashboard\demo\app.py
+```
 
 ## Safety model
 
-These projects automate sensitive operational work, so the public edition follows four rules:
-
-1. Read-only discovery and dry-run happen before any write.
-2. Real writes require explicit operator approval and a small pilot.
-3. Credentials come from environment variables or local ignored files.
-4. Every action must be attributable, resumable, and verifiable.
-
-## Explore and run
-
-Each project has its own README with architecture, setup, safety constraints, and test commands. Integrations with commercial platforms require your own authorized account and may need selector/configuration adaptation.
-
-```powershell
-git clone <repository-url>
-cd opsentry-automation-portfolio
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r projects/operations-dashboard/demo/requirements.txt
-cd projects/<project>/demo
-python -m unittest discover -v
-```
-
-Never point a first run at production. Use synthetic data, dry-run mode, and a disposable test account.
+1. Discovery and dry-run happen before any write.
+2. Mutable actions require explicit human approval and a small pilot.
+3. Credentials come from local environment configuration, never source control.
+4. Work is attributable, resumable, bounded, and independently verifiable.
+5. Synthetic offline tests exercise the public workflows without contacting vendors.
 
 ## Repository quality
 
-- CI checks Python syntax, tests, forbidden files, and secret-like content.
-- Dependabot proposes dependency and workflow updates.
-- Security reports follow a private disclosure process.
-- Changes use pull requests and the included review checklist.
+- Windows CI runs the public-tree safety scanner, compiles every Python file, and executes all offline tests.
+- CodeQL analyzes Python changes and runs weekly.
+- Dependabot updates GitHub Actions and Python dependencies.
+- Tagged GUARDIAN releases build and hash the Windows installer automatically.
+- Issue forms support bug reports, feature requests, and professional inquiries without requesting confidential data.
 
-## License and ownership
+## Contributing
 
-No open-source license is attached to this release candidate yet. Public licensing must happen only after confirming that the publisher owns the code or has written authorization from the owner. Until then, all rights are reserved.
+Bug fixes, documentation improvements, new synthetic fixtures, and vendor-neutral adapters are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), open an issue, and keep examples reproducible without private infrastructure.
 
-## Contact
+If this project helps you build safer automation, consider starring it. Stars make the examples easier for other operators and hiring teams to discover.
 
-Open a GitHub issue for technical questions, hiring conversations, consulting work, or a private integration discussion. Never attach customer data, credentials, or internal evidence to a public issue.
+## License
+
+Released under the [MIT License](LICENSE). External platforms and trademarks remain the property of their respective owners. Use integrations only on systems you own or are explicitly authorized to administer.
 

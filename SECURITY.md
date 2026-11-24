@@ -2,7 +2,7 @@
 
 ## Supported version
 
-Only the latest commit on the default branch is supported during the release-candidate phase.
+The latest commit on the default branch and the latest tagged GUARDIAN release are supported.
 
 ## Reporting a vulnerability
 

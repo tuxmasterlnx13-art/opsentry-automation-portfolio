@@ -12,3 +12,10 @@ Tools for diagnosing and staging router, plan, serial-number, and cancellation c
 
 The public source is an integration reference. Selectors and configuration must be adapted to an authorized test environment before use.
 
+## Try it
+
+From the repository root run `scripts/run-showcase.ps1` on Windows or
+`scripts/run-showcase.sh` on Linux/macOS. The synthetic example creates one
+reviewable router change and excludes a cancelled record. No external system is
+contacted.
+

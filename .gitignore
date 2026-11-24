@@ -48,6 +48,7 @@ __pycache__/
 dist/
 build/
 output/
+downloads/
 .build-venv/
 *.exe
 

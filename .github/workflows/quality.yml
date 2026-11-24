@@ -30,7 +30,7 @@ jobs:
       - name: Compile Python
         shell: pwsh
         run: |
-          $files = Get-ChildItem projects -Recurse -File -Filter *.py
+          $files = Get-ChildItem projects,scripts -Recurse -File -Filter *.py
           foreach ($file in $files) { python -m py_compile $file.FullName }
       - name: Run offline demo tests
         shell: pwsh
@@ -41,4 +41,6 @@ jobs:
             try { python -m unittest discover -v; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
             finally { Pop-Location }
           }
+      - name: Run unified synthetic showcase
+        run: python scripts/run-showcase.py --check
 

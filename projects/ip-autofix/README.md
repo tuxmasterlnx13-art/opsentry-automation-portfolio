@@ -14,3 +14,12 @@ A two-stage automation for authorized ISP environments: collect the eligible TR-
 
 Offline tests use simulated HTML and browser doubles. They must not contact a vendor platform. Real integration testing requires an authorized disposable account and synthetic records.
 
+Run the guarded planner as part of the unified showcase:
+
+```powershell
+.\scripts\setup.ps1
+.\scripts\run-showcase.ps1
+```
+
+The example approves only a unique address inside the configured carrier-grade NAT range. It returns decisions; it never connects to a router or performs a write.
+

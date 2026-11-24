@@ -12,3 +12,14 @@ A persistent coordination layer for specialized audit and remediation workers. I
 
 This project is useful as an architecture example even when the external platform adapters are replaced.
 
+## Try it
+
+The unified showcase creates a temporary SQLite database, atomically claims a
+synthetic job, verifies worker ownership, and marks it complete:
+
+```powershell
+.\scripts\run-showcase.ps1
+```
+
+The temporary database is removed at the end of the demonstration.
+
